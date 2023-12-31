@@ -35,7 +35,15 @@ func (fb *FileBasedUserManager) GetUserList() ([]string, error) {
 		return []string{}, err
 	}
 
-	return strings.Split(string(data), "\n"), nil
+	userList := []string{}
+
+	for _, connectCode := range strings.Split(string(data), "\n") {
+		if connectCodeIsValid(connectCode) {
+			userList = append(userList, connectCode)
+		}
+	}
+
+	return userList, nil
 }
 
 // AddUser adds a user to the file.

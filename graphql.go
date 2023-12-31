@@ -17,7 +17,7 @@ type GraphQLResponse struct {
 				DisplayName string `json:"displayName"`
 				ConnectCode struct {
 					Code string `json:"code"`
-				}
+				} `json:"connectCode"`
 				RankedNetplayProfile struct {
 					RatingOrdinal float32 `json:"ratingOrdinal"`
 				} `json:"rankedNetplayProfile"`
@@ -30,6 +30,10 @@ type UserData struct {
 	DisplayName   string
 	ConnectCode   string
 	RatingOrdinal float32
+}
+
+func (ud UserData) String() string {
+	return fmt.Sprintf("%s(%s) - %f", ud.DisplayName, ud.ConnectCode, ud.RatingOrdinal)
 }
 
 // fetchUserData returns a UserData struct containing the fields queried from slippi
@@ -82,7 +86,8 @@ func fetchUserData(connectCode string) (*UserData, error) {
 		return nil, fmt.Errorf("Error decoding JSON: %s", err)
 	}
 
-	displayName := graphQLResponse.Data.GetConnectCode.User.ConnectCode.Code
+	connectCode = graphQLResponse.Data.GetConnectCode.User.ConnectCode.Code
+	displayName := graphQLResponse.Data.GetConnectCode.User.DisplayName
 	ratingOrdinal := graphQLResponse.Data.GetConnectCode.User.RankedNetplayProfile.RatingOrdinal
 
 	return &UserData{

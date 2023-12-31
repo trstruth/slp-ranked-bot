@@ -22,13 +22,13 @@ func messageHandler(s *discordgo.Session, m *discordgo.MessageCreate) {
 
 	switch command {
 	case "!board":
-		board(s)
+		board(s, m)
 	case "!rankadd":
 		if len(parts) < 2 {
 			// TODO spit this out at the user
 			log.Println("need to supply username")
 			return
 		}
-		rankAdd(s, parts[1])
+		rankAdd(s, m, parts[1])
 	}
 }

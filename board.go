@@ -1,13 +1,15 @@
 package main
 
 import (
+	"bytes"
 	"fmt"
+	"sort"
 	"sync"
 
 	"github.com/bwmarrin/discordgo"
 )
 
-func board(s *discordgo.Session) {
+func board(s *discordgo.Session, m *discordgo.MessageCreate) {
 	fmt.Println("board called")
 
 	userManager, err := NewFileBasedUserManager("slp-ranked-bot.db")
@@ -48,7 +50,25 @@ func board(s *discordgo.Session) {
 		userDataList = append(userDataList, userData)
 	}
 
-	for _, userData := range userDataList {
-		fmt.Printf("%+v\n", userData)
+	// sort by rating ordinal in descending order
+	sort.Slice(userDataList, func(i, j int) bool {
+		return userDataList[i].RatingOrdinal > userDataList[i].RatingOrdinal
+	})
+
+	var buffer bytes.Buffer
+	for idx, userData := range userDataList {
+		place := idx + 1
+		userDisplayString := userData.String()
+		buffer.WriteString(fmt.Sprintf("%d: %s\n", place, userDisplayString))
+	}
+
+	boardMessage := buffer.String()
+	if boardMessage == "" {
+		boardMessage = "board is empty - add a user with !rankadd"
+	}
+
+	_, err = s.ChannelMessageSend(m.ChannelID, boardMessage)
+	if err != nil {
+		fmt.Println("failed to send reply message:", err)
 	}
 }
