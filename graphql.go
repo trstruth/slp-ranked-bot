@@ -36,6 +36,7 @@ type UserData struct {
 // note that the caller must provide the connect code in the following format: `BIG#9`
 // the letters in the connectCode MUST be capitalized.
 func fetchUserData(connectCode string) (*UserData, error) {
+	fmt.Println("fetchUserData called with:", connectCode)
 	// Schema
 	payload := []byte(fmt.Sprintf(query, connectCode, connectCode))
 	url := "https://gql-gateway-dot-slippi.uc.r.appspot.com/graphql"
