@@ -52,7 +52,7 @@ func board(s *discordgo.Session, m *discordgo.MessageCreate) {
 
 	// sort by rating ordinal in descending order
 	sort.Slice(userDataList, func(i, j int) bool {
-		return userDataList[i].RatingOrdinal > userDataList[i].RatingOrdinal
+		return userDataList[i].RatingOrdinal > userDataList[j].RatingOrdinal
 	})
 
 	var buffer bytes.Buffer
